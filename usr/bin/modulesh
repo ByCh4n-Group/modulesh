@@ -1,0 +1,116 @@
+#!/bin/bash
+
+#    modulesh - more than snake, a script management tool for bourne again shell
+#    Copyright (C) 2021  lazypwny751
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# variables
+version="1.0.0"
+maintainer="lazypwny751"
+moduletriggers="/usr/local/lib/modulesh"
+
+# Reset
+reset='\033[0m'           # Text Reset
+
+# Regular Colors
+black='\033[0;30m'        # Black
+red='\033[0;31m'          # Red
+green='\033[0;32m'        # Green
+yellow='\033[0;33m'       # Yellow
+blue='\033[0;34m'         # Blue
+purple='\033[0;35m'       # Purple
+cyan='\033[0;36m'         # Cyan
+white='\033[0;37m'        # White
+
+## text-utils demo
+error() {
+    echo -e "${red}[-] Error Occured${reset}: ${1}"
+    [[ ${2} = "fatal" ]] && exit 1
+}
+
+warn() {
+    echo -e "${yellow}[!] Warning${reset}: ${1}"
+}
+
+info() {
+    echo -e "${blue}[*] Info${reset}: ${1}"
+}
+
+success() {
+    echo -e "${green}[+] Successfully${reset}: ${1}"
+}
+
+check() {
+    case ${1} in
+        d)
+            for i in $(seq 2 ${#}) ; do 
+                [[ -d "${@:i:1}" ]] || error "Directory ${@:i:1} not found!" fatal
+            done
+        ;;
+        f)
+            for i in $(seq 2 ${#}) ; do 
+                [[ -f "${@:i:1}" ]] || error "File ${@:i:1} not found!" fatal
+            done
+        ;;
+        t)
+            for i in $(seq 2 ${#}) ; do 
+                [[ $(command -v ${@:i:1}) ]] || error "Trigger ${@:i:1} not found! Please install that package." fatal
+            done
+        ;;
+    esac
+}
+
+## Main
+
+case ${1} in
+    [hH][eE][lL][pP]|--[hH][eE][lL][pP]|-[hH])
+        echo -e "
+"
+    exit 0
+    ;;
+    [vV][eE][rR][sS][iI][oO][nN]|--[vV][eE][rR][sS][iI][oO][nN]|-[vV])
+        echo -e "$(basename ${0}) - ${version} by ${maintainer}"
+        exit 0
+    ;;
+    [lL][iI][sS][tT]|--[lL][iI][sS][tT]|-[lL])
+        check d "${moduletriggers}"
+        if [[ $(ls ${moduletriggers} | wc -l) != 0 ]] ; then
+            ls ${moduletriggers}
+            echo -e "there are ${cyan}$(ls ${moduletriggers} | wc -l)${reset} module(s)"
+        else
+            warn "you haven't any module(s)"
+            info ""
+        fi
+        exit 0
+    ;;
+    *)
+        check d "${moduletriggers}"
+        check t "themis"
+        for x in $(seq 0 $((${#} - 1 ))) ; do
+            if [[ -f "${moduletriggers}/${@:x:1}.sh" ]] ; then
+                source "${moduletriggers}/${@:x:1}.sh"
+            elif [[ -f "${moduletriggers}/${@:x:1}" ]] ; then
+                source "${moduletriggers}/${@:x:1}"
+            elif [[ -f ./"${@:i:1}.sh" ]] ; then
+                source ./"${@:i:1}.sh"
+            elif [[ -f ./"${@:i:1}" ]] ; then
+                source ./"${@:i:1}"
+            else
+                error "module '${blue}${@:i:1}${reset}' not found in path and current directory."
+                info "you can search it on themis '${yellow}sudo themis --list repo | grep ${@:i:1}${reset}'"            
+            fi
+        done
+    ;;
+esac
