@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo ${SUDO_USER:-${USER}}
+echo "${SUDO_USER:-${USER}}"

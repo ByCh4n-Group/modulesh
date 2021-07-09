@@ -76,12 +76,25 @@ check() {
 
 case ${1} in
     [hH][eE][lL][pP]|--[hH][eE][lL][pP]|-[hH])
-        echo -e "
-"
-    exit 0
+        echo -e "There are three (3) flags: ${white}--help${reset}, ${white}--version${reset}, ${white}--list${reset}
+${blue}--help${reset}: show this menu.
+${blue}--version${reset}: this flag prints trigger name (modulesh), version, author name and number(s) of modules.
+${blue}--list${reset}: print modules.
+
+default usage in script (Example):${yellow}"
+        echo '
+#!/bin/bash
+
+. modulesh color text-utils net-utils
+
+echo -e "${blue}Hello ${red}World${reset}!"
+netcheck -e
+success "modulesh by bych4n-group"'
+        echo -e "${reset}"
+        exit 0
     ;;
     [vV][eE][rR][sS][iI][oO][nN]|--[vV][eE][rR][sS][iI][oO][nN]|-[vV])
-        echo -e "$(basename ${0}) - ${version} by ${maintainer}"
+        echo -e "$(basename ${0}) - ${version} by ${maintainer}, $(ls ${moduletriggers} | wc -l) module(s)"
         exit 0
     ;;
     [lL][iI][sS][tT]|--[lL][iI][sS][tT]|-[lL])
@@ -91,26 +104,31 @@ case ${1} in
             echo -e "there are ${cyan}$(ls ${moduletriggers} | wc -l)${reset} module(s)"
         else
             warn "you haven't any module(s)"
-            info ""
+            info "you can install modules with '${yellow}$(basename `command -v themis`)${reset}'"
         fi
         exit 0
     ;;
     *)
+        sourcestatus="working"
         check d "${moduletriggers}"
         check t "themis"
-        for x in $(seq 0 $((${#} - 1 ))) ; do
+        for x in $(seq 1 ${#}) ; do
             if [[ -f "${moduletriggers}/${@:x:1}.sh" ]] ; then
                 source "${moduletriggers}/${@:x:1}.sh"
             elif [[ -f "${moduletriggers}/${@:x:1}" ]] ; then
                 source "${moduletriggers}/${@:x:1}"
-            elif [[ -f ./"${@:i:1}.sh" ]] ; then
-                source ./"${@:i:1}.sh"
-            elif [[ -f ./"${@:i:1}" ]] ; then
-                source ./"${@:i:1}"
+            elif [[ -f ./"${@:x:1}.sh" ]] ; then
+                source ./"${@:x:1}.sh"
+            elif [[ -f ./"${@:x:1}" ]] ; then
+                source ./"${@:x:1}"
             else
-                error "module '${blue}${@:i:1}${reset}' not found in path and current directory."
-                info "you can search it on themis '${yellow}sudo themis --list repo | grep ${@:i:1}${reset}'"            
+                error "module '${blue}${@:x:1}${reset}' not found in path and current directory."
+                info "you can search it on themis '${yellow}sudo themis --list repo | grep ${@:x:1}${reset}'\n"            
+                sourcestatus="fatal"
             fi
         done
+        if [[ ${sourcestatus} = "fatal" ]] ; then
+            error "${red}some modules could not sourced which means end of script${reset}" fatal
+        fi 
     ;;
 esac
