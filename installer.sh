@@ -17,7 +17,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # variables
-latestthemissource="https://github.com/ByCh4n-Group/themis/archive/refs/tags/1.0.1.tar.gz"
+latestthemissource="https://github.com/ByCh4n-Group/themis/archive/refs/tags/1.0.0.tar.gz"
 latestthemismakefile="https://raw.githubusercontent.com/ByCh4n-Group/themis/main/Makefile"
 
 version="1.0.0"

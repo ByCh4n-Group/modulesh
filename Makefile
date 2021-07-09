@@ -1,7 +1,7 @@
-latestthemissource=https://github.com/ByCh4n-Group/themis/archive/refs/tags/1.0.1.tar.gz
+latestthemissource=https://github.com/ByCh4n-Group/themis/archive/refs/tags/1.0.0.tar.gz
 latestthemismakefile=https://raw.githubusercontent.com/ByCh4n-Group/themis/main/Makefile
-basenameofsource=1.0.1.tar.gz
-dirnameofsource=themis-1.0.1
+basenameofsource=1.0.0.tar.gz
+dirnameofsource=themis-1.0.0
 
 define installthemis
 	wget ${latestthemissource}
