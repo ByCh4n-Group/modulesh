@@ -17,8 +17,8 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # variables
-latestthemissource="https://github.com/ByCh4n-Group/themis/archive/refs/tags/1.0.0.tar.gz"
-latestthemismakefile="https://raw.githubusercontent.com/ByCh4n-Group/themis/main/Makefile"
+themissource="https://github.com/ByCh4n-Group/themis"
+themismakefile="https://raw.githubusercontent.com/ByCh4n-Group/themis/main/Makefile"
 
 version="1.0.0"
 maintainer="lazypwny751"
@@ -49,10 +49,9 @@ case ${1} in
     [iI][nN][sS][tT][aA][lL][lL]|--[iI][nN][sS][tT][aA][lL][lL]|-[iI])
         ping -q -w1 -c1 google.com &>/dev/null || error "No internet connection" fatal
         [ ${UID} != 0 ] && error "Please run it as root privalages '${blue}sudo bash ${0} --install${reset}'" fatal
-        wget ${latestthemissource}
-        cd $(tar -xvf $(basename ${latestthemissource}) | tail -n 1 | tr "/" " " | awk '{print $1}') && make install
+        git clone ${themissource} ; cd $(basename ${themissource}) ; sudo make install
         cd .. && rm -rf ${OLDPWD}
-        rm $(basename ${latestthemissource})
+        rm -rf $(basename ${themissource})
         [ -d ${moduletriggers} ] && rm -rf ${moduletriggers}
         mkdir -p ${moduletriggers} /usr/share/doc/packages/modulesh /usr/share/licenses/modulesh
         chown ${SUDO_USER:-$USER}:$(cat /etc/group | awk -F: '{ print $1}' | grep -w ${SUDO_USER:-$USER} || echo "users") ${moduletriggers}
@@ -66,7 +65,7 @@ case ${1} in
         ping -q -w1 -c1 google.com &>/dev/null || error "No internet connection" fatal
         [ ${UID} != 0 ] && error "Please run it as root privalages '${blue}sudo bash ${0} --uninstall${reset}'" fatal
         mkdir ./themis && cd ./themis
-        wget ${latestthemismakefile} && make uninstall
+        wget ${themismakefile} && make uninstall
         cd .. && rm -rf ./themis
         rm -rf ${moduletriggers} /usr/share/doc/packages/modulesh /usr/share/licenses/modulesh /usr/bin/modulesh
         success "uninstalled.."
@@ -75,13 +74,14 @@ case ${1} in
         ping -q -w1 -c1 google.com &>/dev/null || error "No internet connection" fatal
         [ ${UID} != 0 ] && error "Please run it as root privalages '${blue}sudo bash ${0} --reinstall${reset}'" fatal
         mkdir ./themis && cd ./themis
-        wget ${latestthemismakefile} && make uninstall
+        wget ${themismakefile} && make uninstall
         cd .. && rm -rf ./themis
         rm -rf ${moduletriggers} /usr/share/doc/packages/modulesh /usr/share/licenses/modulesh /usr/bin/modulesh
-        wget ${latestthemissource}
-        cd $(tar -xvf $(basename ${latestthemissource}) | tail -n 1 | tr "/" " " | awk '{print $1}') && make install
+        ping -q -w1 -c1 google.com &>/dev/null || error "No internet connection" fatal
+        [ ${UID} != 0 ] && error "Please run it as root privalages '${blue}sudo bash ${0} --install${reset}'" fatal
+        git clone ${themissource} ; cd $(basename ${themissource}) ; sudo make install
         cd .. && rm -rf ${OLDPWD}
-        rm $(basename ${latestthemissource})
+        rm -rf $(basename ${themissource})
         [ -d ${moduletriggers} ] && rm -rf ${moduletriggers}
         mkdir -p ${moduletriggers} /usr/share/doc/packages/modulesh /usr/share/licenses/modulesh
         chown ${SUDO_USER:-$USER}:$(cat /etc/group | awk -F: '{ print $1}' | grep -w ${SUDO_USER:-$USER} || echo "users") ${moduletriggers}
