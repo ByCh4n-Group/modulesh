@@ -1,13 +1,10 @@
-latestthemissource=https://github.com/ByCh4n-Group/themis/archive/refs/tags/1.0.0.tar.gz
+themissource=https://github.com/ByCh4n-Group/themis
 latestthemismakefile=https://raw.githubusercontent.com/ByCh4n-Group/themis/main/Makefile
-basenameofsource=1.0.0.tar.gz
-dirnameofsource=themis-1.0.0
+dirnameofsource=themis
 
 define installthemis
-	wget ${latestthemissource}
-	tar -xvf ${basenameofsource}
-	cd ${dirnameofsource} ; sudo make install
-	rm -rf ${dirnameofsource} ${basenameofsource}
+	git clone ${themissource} ; cd ${dirnameofsource} ; sudo make install
+	rm -rf ${dirnameofsource}
 endef
 
 define rmthemis
